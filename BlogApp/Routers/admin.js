@@ -130,71 +130,122 @@ router.post('/cat/del',(req,res)=>{
     })
 })
 
-// router.get('/postagem',(req,res)=>{
-//     res.render('/admin/postagens')
-// })
-
-router.get("/postagens",(req,res)=>{
-    res.render("admin/postagens");
-})
-
-router.get("/postagens/add",(req,res)=>{
-    Categoria.find().then((categorias)=>{
-        res.render('postagem/add',{categorias:categorias});
-    }).catch(()=>{
-        req.flash("erro_msg","erro ao adicionar categoria");
-        res.redirect('/admin');
+router.get("/postagem",(req,res)=>{
+    Postagem.find().then((postagens)=>{
+        res.render("admin/postagem/postagem",{postagens:postagens})
     })
-    
+   // res.render("admin/postagem/postagem");
 })
 
-router.post("/postagens/nova",(req,res)=>{
-    var erro = []
+router.get("/postagem/addpostagem",(req,res)=>{
+    Categoria.find().then((categorias)=>{
+    res.render('admin/postagem/addpostagem',{categorias:categorias});
+    }).catch(()=>{
+                req.flash("erro_msg","erro ao adicionar categoria");
+                res.redirect('/admin');
+            })
 
+})
+
+router.post('/postagem/nova',(req,res)=>{
+    var erro = []
+    console.log(req.body.titulo);
     if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
-        erro.push({texto:"Titulo Invalido"});
-    }
-    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
-     erro.push({texto:"Slug Invalido"});
-     }
-     if(req.body.slug.length<2){ 
-         erro.push({texto:"Slug da categoria muito pequeno"});
-     }
-     if(req.body.categoria == 0 ){
-        erro.push({texto:"Categoria Invalida, registre uma Categoria"});
-    }
+      erro.push({texto:"Titulo Invalido"});
+   } 
+   if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+        erro.push({texto:"Slug Invalido"});
+    }  
     if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
         erro.push({texto:"Descricao tem esta preenchencida"});
     }
-
-    if(!req.body.conteudo || typeof req.body.conteudo == undefined || req.body.conteudo == null){
-        erro.push({texto:"Conteudo tem esta preenchido"});
-    }
-    
-    //  if(erro.length>0){
-    //      res.render('/admin/cat',{erro:erro});
-    //  }
-     else{
-        const novaPostagen = {
-            titulo: req.body.titulo,
-            slug:req.body.slug,
-            descricao:req.body.descricao,
-            conteudo:req.body.conteudo,
-            categoria:req.body.conteudo
-           
+     if(!req.body.conteudo || typeof req.body.conteudo == undefined || req.body.conteudo == null){
+                erro.push({texto:"Conteudo tem esta preenchido"});
+   }
+   if(req.body.categoria == 0 ){
+            erro.push({texto:"Categoria Invalida, registre uma Categoria"});
         }
-        new Postagem(novaPostagen).save().then(()=>{
-            req.flash("teste_msg","Postagem Criado Com Sucesso");
-            rres.redirect("/admin/postagens");
+       
+    if(erro.length>0){
+             res.render('admin/cat',{erro:erro});
+         }
+
+   else{
+       const novaPostagen ={
+           titulo: req.body.titulo,
+           slug: req.body.slug,
+           conteudo: req.body.conteudo,
+           descricao: req.body.descricao,
+           categoria: req.body.categoria
+       }
+       new Postagem(novaPostagen).save().then(()=>{
+        req.flash("teste_msg","Postagem Criado Com Sucesso");
+        res.redirect("/admin/postagem/postagem");      
+       }).catch((err)=>{
+        req.flash("erro_msg","erro ao Cria a Postagen");
+        res.redirect("/admin/postagens");
+       })
+   }
+})
+
+router.post("/validate",(req,res)=>{
+    const novaPostagen ={
+        titulo: req.body.titulo,
+        slug: req.body.slug,
+        conteudo: req.body.conteudo,
+        descrption: req.body.descrption,
+        categoria: req.body.categoria
+    }
+    new Postagem(novaPostagen).save().then(()=>{
+     req.flash("test_msg","Postagem Criado Com Sucesso");
+     res.redirect("/admin/postagem");      
+    }).catch((err)=>{
+     req.flash("erro_msg","erro ao Cria a Postagen " + err);
+     res.redirect("/admin/postagem");
+    })
+
+})
+// router.post("/postagens/nova",(req,res)=>{
+//     var erro = []
+
+//     if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
+//         erro.push({texto:"Titulo Invalido"});
+//     }
+//     if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+//      erro.push({texto:"Slug Invalido"});
+//      }
+//      if(req.body.slug.length<2){ 
+//          erro.push({texto:"Slug da categoria muito pequeno"});
+//      }
+//      if(req.body.categoria == 0 ){
+//         erro.push({texto:"Categoria Invalida, registre uma Categoria"});
+//     }
+//    
     
-        }).catch(()=>{
-            req.flash("erro_msg","erro ao Cria a Postagen");
-            res.redirect("/admin/postagens");
-        })
-     }
+//     //  if(erro.length>0){
+//     //      res.render('/admin/cat',{erro:erro});
+//     //  }
+//      else{
+//         const novaPostagen = {
+//             titulo: req.body.titulo,
+//             slug:req.body.slug,
+//             descricao:req.body.descricao,
+//             conteudo:req.body.conteudo,
+//             categoria:req.body.conteudo
+           
+//         }
+//         new Postagem(novaPostagen).save().then(()=>{
+//             req.flash("teste_msg","Postagem Criado Com Sucesso");
+//             rres.redirect("/admin/postagens");
+    
+//         }).catch(()=>{
+//             req.flash("erro_msg","erro ao Cria a Postagen");
+//             res.redirect("/admin/postagens");
+//         })
+//      }
 
     
-})
+// })
 
 
 module.exports= router;

@@ -15,7 +15,7 @@ Postagen = new Schema({
         required:true
 
     },
-    contuedo:{
+    conteudo:{
         type:String,
         required:true
     },
