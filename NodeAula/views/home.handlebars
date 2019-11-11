@@ -1,0 +1,8 @@
+<h1>Lista de Postagens</h1>
+{{#each pst}}
+<h2>{{titulo}}</h2>
+<p>{{conteudo}}</p>
+<a href="/del/{{id}}"><button>Remove</button></a>
+<hr>
+{{/each}}
+<a href="/cad"><button>Adicionar</button></a>
