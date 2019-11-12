@@ -6,17 +6,16 @@
  <div class="card">
     <div class="card-body">
         <h4>{{titulo}}</h4>
-        <small>{{slug}}</small>
         <br>
-        <label>{{descrption}}</label>
+        <p>{{descrption}}</p>
         <br>
-         <small>{{conteudo}}</small>
+         <p>{{conteudo}}</p>
          <br>
+         <small>{{categoria.nome}}</small>
         <div class="container mt-2"> 
-        <a href="/admin/cat/edite/{{_id}}"><button type="button" class="btn btn-outline-success mt-2">Edite</button></a>
+        <a href="/admin/postagem/edite/{{_id}}"><button type="button" class="btn btn-outline-success mt-2">Edite</button></a>
        <br>
-
-        <form action="/admin/cat/del" method="POST"> 
+        <form action="/admin/postagem/del" method="POST"> 
         <input type="hidden" name="id" value="{{id}}">
         <button type="button " class="btn btn-outline-danger mt-2">Remove</button>
         </form>

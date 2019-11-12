@@ -131,7 +131,7 @@ router.post('/cat/del',(req,res)=>{
 })
 
 router.get("/postagem",(req,res)=>{
-    Postagem.find().then((postagens)=>{
+    Postagem.find().populate('categoria').then((postagens)=>{
         res.render("admin/postagem/postagem",{postagens:postagens})
     })
    // res.render("admin/postagem/postagem");
@@ -205,47 +205,48 @@ router.post("/validate",(req,res)=>{
     })
 
 })
-// router.post("/postagens/nova",(req,res)=>{
-//     var erro = []
 
-//     if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
-//         erro.push({texto:"Titulo Invalido"});
-//     }
-//     if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
-//      erro.push({texto:"Slug Invalido"});
-//      }
-//      if(req.body.slug.length<2){ 
-//          erro.push({texto:"Slug da categoria muito pequeno"});
-//      }
-//      if(req.body.categoria == 0 ){
-//         erro.push({texto:"Categoria Invalida, registre uma Categoria"});
-//     }
-//    
-    
-//     //  if(erro.length>0){
-//     //      res.render('/admin/cat',{erro:erro});
-//     //  }
-//      else{
-//         const novaPostagen = {
-//             titulo: req.body.titulo,
-//             slug:req.body.slug,
-//             descricao:req.body.descricao,
-//             conteudo:req.body.conteudo,
-//             categoria:req.body.conteudo
-           
-//         }
-//         new Postagem(novaPostagen).save().then(()=>{
-//             req.flash("teste_msg","Postagem Criado Com Sucesso");
-//             rres.redirect("/admin/postagens");
-    
-//         }).catch(()=>{
-//             req.flash("erro_msg","erro ao Cria a Postagen");
-//             res.redirect("/admin/postagens");
-//         })
-//      }
+router.get("/postagem/edite/:id",(req,res)=>{
+    Postagem.findOne({_id:req.params.id}).then((postagem)=>{
+        Categoria.find({_id:postagem.categoria}).then((categoria)=>{
+            res.render("admin/postagem/editepostagem",{categoria:categoria,postagem:postagem});
+        }).catch((err)=>{
+            req.flash("erro_msg","erro ao editar");
+            res.redirect("/admin/postagem");
+        })
+    })
+   
+})
+router.post("/postagem/edite",(req,res)=>{
+    Postagem.findOne({_id:req.body.id}).then((postagem)=>{
+        postagem.titulo =req.body.titulo;
+        postagem.slug = req.body.slug;
+        postagem.conteudo = req.body.conteudo;
+        postagem.descrption = req.body.descrption;
+        postagem.categoria = req.body.categoria;
+        postagem.save().then(()=>{
+            req.flash("test_msg","Postagem atualizada com Sucesso");
+            res.redirect('/admin/postagem');
+        }).catch((err)=>{
+            req.flash("erro_msg","Hove um erro interno ao salvar a postagem");
+            res.redirect('/admin/postagem');
+        })
+    }).catch((err)=>{
+        req.flash("erro_msg","Hove um erro ao editar a postagem");
+        res.redirect('/admin/postagem');
+    })
 
-    
-// })
+})
 
+router.post("/postagem/del",(req,res)=>{
+    Postagem.remove({_id:req.body.id}).then(()=>{
+        req.flash('test_msg','Postagem Deletada Com Sucesso')
+        res.redirect('/admin/postagem');
+    }).catch((erro)=>{
+        req.flash('erro_msg','Erro ao deletar a Postagem')
+        res.redirect('/admin/Postagem');
+    })
+
+})
 
 module.exports= router;
