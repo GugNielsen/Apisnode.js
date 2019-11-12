@@ -1,0 +1,25 @@
+<div class="jumbotron">
+  <h1 class="display-4">Bem Vindo ao Blog-App!</h1>
+  <p class="lead">Quando tudo nos parece dar errado, acontecem coisas boas,que não teriam acontecido. Se tudo tivesse dado certo...</p>
+  <hr class="my-4">
+  <p>Os anjos não dão os ombros, não; quando querem mostrar indiferença os anjos dão as asas.</p>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Crie uma Conta</a>
+</div>
+<h2>Postagens Recentes:</h2>
+ {{#each postagens}}
+<div class="card mt-4"  >
+<div class="card-body">
+   <h3 class="" >{{titulo}}</h3>
+   <p >{{descrption}}</p>
+   <a href="/postagem/{{slug}}"> <button type="button" class="btn btn-link">Leia Mais</button> </a>
+   <hr>
+   <small>Categoria: {{categoria.nome}}</small><br>
+   <small>Data: {{data}}</small>
+
+
+</div>
+</div>
+{{else}}
+<h4>Nenhuma Postagem</h4>
+
+{{/each}}

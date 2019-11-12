@@ -1,0 +1,13 @@
+   <h1>Categorias:</h1>
+   <hr>
+    {{#each categorias}} 
+<ul class="list-group">
+ <a href="/categoria/{{slug}}"> <button type="button" class="btn btn-link">* {{nome}}</button> </a>
+</ul>
+{{else}}
+ <div class="mt-2">
+<h4>Nenhuma Categoria registrada:</h4>
+ </div>
+ {{/each}}
+
+

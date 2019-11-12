@@ -9,6 +9,10 @@ const admin = require('./Routers/admin')
 const path = require('path');
 const session = require('express-session');
 const flah = require('connect-flash')
+require ('./Models/Postagen');
+Postagem = mongoose.model('postagens');
+require('./Models/Categoria');
+const Categoria = mongoose.model('categorias');
 
 // secao
 app.use(session({
@@ -44,8 +48,55 @@ mongoose.Promise = global.Promise;
 //Public
 app.use(express.static(path.join(__dirname,'public')))
 
+app.get("/",(req,res)=>{
+    Postagem.find().populate('categoria').sort('-date').then((postagens)=>{
+        res.render("index",{postagens:postagens});
+    })
+    
+})
+
+app.get("/postagem/:slug",(req,res)=>{
+    Postagem.findOne({slug:req.params.slug}).then((postagem)=>{
+        if(postagem){
+            res.render("postagem/index",{postagem:postagem})
+        }
+        else{
+            req.flash("erro_msg"," Esta pagina não existe")
+            res.redirect("/")
+        }
+    }).catch((err)=>{
+        req.flash("erro_msg"," Ouve Um erro Interno ")
+        res.redirect("/")
+    })
+})
+
+app.get("/categoria",(req,res)=>{
+    Categoria.find().then((categorias)=>{
+        res.render("categoria",{categorias:categorias});
+    })
+})
+
+app.get("/categoria/:slug",(req,res)=>{
+    Categoria.findOne({slug:req.params.slug}).then((categoria)=>{
+        
+        if(Categoria){
+            Postagem.find({categoria:categoria}).then((postagens)=>{
+                res.render("categoria/index",{postagens:postagens,categoria:categoria});
+            })
+        }
+        else{
+            req.flash("erro_msg","Categoria Inexiste");
+            res.redirect("/");
+        }
+
+    }).catch((erro)=>{
+        req.flash("erro_msg","Ocorreu um erro interno" + erro);
+        res.redirect("/");
+    })
+})
+
 // rotas
-app.use('/admin',admin)
+app.use('/admin',admin);
 
 
 //outros
