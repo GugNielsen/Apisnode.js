@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const app = express();
-const a = require('./Routers/admin')
 const admin = require('./Routers/admin')
 const path = require('path');
 const session = require('express-session');
@@ -14,6 +13,9 @@ Postagem = mongoose.model('postagens');
 require('./Models/Categoria');
 const Categoria = mongoose.model('categorias');
 const user = require("./Routers/user")
+const passport = require('passport');
+require('./config/auth').passport;
+
 
 // secao
 app.use(session({
@@ -21,6 +23,12 @@ app.use(session({
     resave:true,
     saveUninitialized:true
 }));
+
+// Autenficação
+app.use(passport.initialize());
+app.use(passport.session());
+// require(path.join(__dirname, 'auth'))(passport);
+
 app.use(flah());
 // Middleware
  app.use((req,res,nest) =>{
@@ -95,7 +103,6 @@ app.get("/categoria/:slug",(req,res)=>{
         res.redirect("/");
     })
 })
-
 // rotas
 app.use('/admin',admin);
 app.use('/usuario',user)

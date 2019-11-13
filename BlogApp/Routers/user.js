@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('../Models/Usuario');
 const Usuario = mongoose.model('usuarios');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 router.get("/registro",(req,res)=>{
    res.render("usuario/registro"); // const novoUsuario
@@ -79,6 +80,34 @@ router.post("/registro",(req,res)=>{
 
     }
 })
+
+router.get("/login",(req,res)=>{
+    res.render('usuario/login');
+})
+
+router.post('/login',(req,res)=>{
+    Usuario.findOne({email:req.body.email}).then((usuario)=>{
+        if(!usuario){
+            req.flash('erro_msg','Email não registrado')
+            res.redirect('/')
+        }
+        else{
+            bcrypt.compare(req.body.senha,usuario.senha,(err,batem)=>{
+                if(batem){
+                    req.flash('test_msg','Login efetuado com Sucesso')
+                    res.redirect('/')
+                }
+                else{
+                    req.flash('erro_msg','senha invalida')
+                    res.redirect('/')
+                }
+            })
+        }
+        
+    })
+    
+})
+
 
 module.exports =router;
 
