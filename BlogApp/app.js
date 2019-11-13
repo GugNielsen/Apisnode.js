@@ -13,6 +13,7 @@ require ('./Models/Postagen');
 Postagem = mongoose.model('postagens');
 require('./Models/Categoria');
 const Categoria = mongoose.model('categorias');
+const user = require("./Routers/user")
 
 // secao
 app.use(session({
@@ -97,6 +98,7 @@ app.get("/categoria/:slug",(req,res)=>{
 
 // rotas
 app.use('/admin',admin);
+app.use('/usuario',user)
 
 
 //outros
